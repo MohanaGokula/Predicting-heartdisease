@@ -1,0 +1,65 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import plotly.graph_objs as go
+import plotly.express as px
+
+df = pd.read_csv(r'C:\Users\Gokula Sri\Downloads\heart_failure_clinical_records_dataset.csv')
+df.head(5)
+
+df.info()
+
+df.isnull().sum()
+
+df.columns
+
+df.describe()
+
+X = df.drop('DEATH_EVENT', axis = 1)
+y = df['DEATH_EVENT']
+print(X.shape)
+X.head(2)
+
+labels = ['No Diabetes','Diabetes']
+diabetes_yes = df[df['diabetes']==1]
+diabetes_no = df[df['diabetes']==0]
+values = [len(diabetes_no), len(diabetes_yes)]
+fig = go.Figure(data=[go.Pie(labels=labels, values=values)])
+fig.show()
+
+
+fig=px.pie(df,values='diabetes',names='DEATH_EVENT',title='Death Analysis')
+fig.show()
+
+from sklearn.model_selection import train_test_split
+
+Feature=['time','ejection_fraction','serum_creatinine']
+x=df[Feature]
+y=df["DEATH_EVENT"]
+
+print(x)
+
+print(y)
+
+xtrain,xtest,ytrain,ytest=train_test_split(x,y,test_size=0.2,random_state=2)
+
+xtrain,xtest,ytrain,ytest
+
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score
+
+log_re=LogisticRegression()
+
+log_re.fit(xtrain,ytrain)
+log_re_pred=log_re.predict(xtest)
+
+log_acc=accuracy_score(ytest,log_re_pred)
+print("Logistic Accuracy Score: ","{:.2f}%".format(100*log_acc))
+
+from sklearn.metrics import confusion_matrix
+
+cm = confusion_matrix(ytest, log_re_pred)
+plt.figure()
+
+
